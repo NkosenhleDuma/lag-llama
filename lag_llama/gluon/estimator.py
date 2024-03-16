@@ -1,6 +1,6 @@
 from typing import Any, Dict, Iterable, Optional
 
-import pytorch_lightning as pl
+import lightning as pl
 import torch
 
 from gluonts.core.component import validated
@@ -30,10 +30,10 @@ from gluonts.transform import (
     ValidationSplitSampler,
 )
 
-from gluon_utils.gluon_ts_distributions.implicit_quantile_network import (
+from ...gluon_utils.gluon_ts_distributions.implicit_quantile_network import (
     ImplicitQuantileNetworkOutput,
 )
-from lag_llama.gluon.lightning_module import LagLlamaLightningModule
+from .lightning_module import LagLlamaLightningModule
 
 PREDICTION_INPUT_NAMES = [
     "past_target",
@@ -320,7 +320,7 @@ class LagLlamaEstimator(PyTorchLightningEstimator):
                 cosine_annealing_lr_args=self.cosine_annealing_lr_args,
                 track_loss_per_series=self.track_loss_per_series,
                 nonnegative_pred_samples=self.nonnegative_pred_samples,
-            )
+            ).double()
         else:
             return LagLlamaLightningModule(
                 loss=self.loss,
@@ -358,7 +358,7 @@ class LagLlamaEstimator(PyTorchLightningEstimator):
                 cosine_annealing_lr_args=self.cosine_annealing_lr_args,
                 track_loss_per_series=self.track_loss_per_series,
                 nonnegative_pred_samples=self.nonnegative_pred_samples,
-            )
+            ).double()
 
     def _create_instance_splitter(self, module: LagLlamaLightningModule, mode: str):
         assert mode in ["training", "validation", "test"]
